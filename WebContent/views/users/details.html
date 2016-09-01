@@ -1,0 +1,158 @@
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>{{user.fullName}}</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="thumbnail" >
+				<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(user.photo)}}" alt="{{user.fullName}}"> 
+				<button ng-if="authenticated && isSamePerson()" type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#uploadModal">
+					{{translate.changePhoto}}
+				</button>
+			</div>
+			
+			<div ng-if="authenticated && isSamePerson()" ng-controller="peopleDetailsController">
+				<!-- Button trigger modal -->
+				<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel">
+					<div class="modal-dialog" role="document">
+					   	<div class="modal-content">
+					  		<div class="modal-header">
+					   			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					   			<h4 class="modal-title" id="uploadModalLabel">{{translate.chooseNewPhoto}}</h4>
+					   		</div>
+					      	<div class="modal-body">
+					      		<form role="form" class="form-inline" id="uploadForm">
+						    		<div class="form-group">
+										<input type="file" class="filestyle" file-model="myFile" accept="image/*"><br>
+									</div>
+									<button class="btn btn-default" type="button" ng-click="uploadFile()">{{translate.upload}}</button>
+								</form>
+								<hr><p>{{translate.preview}}:</p>
+								<img width="250px" class="img-responsive center-block" ng-if="image.id > 0" ng-src="data:{{image.mimetype}};base64,{{image.contentBase64Encoded}}">
+					      	</div>
+					      	<div class="modal-footer">
+					      		<form role="form" id="setPhotoForm">
+					        		<button type="button" class="btn btn-default" ng-click="discard(image.id)" data-dismiss="modal">{{translate.cancel}}</button>
+					        		<button class="btn btn-primary" type="button" ng-click="setAvatar(image.id)" >{{translate.save}}</button>
+					        	</form>
+					      	</div>     		
+					    </div>
+					</div>
+				</div>			
+			</div>
+			
+			<form ng-if="authenticated && !isSamePerson()" role="form" id="msgForm" ng-submit="send(user.id, body)">
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#msgModal">
+					{{translate.toMessage}}
+				</button>
+				
+				<!-- Modal -->
+				<div class="modal fade" id="msgModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel">
+					<div class="modal-dialog" role="document">
+				    	<div class="modal-content">
+				      		<div class="modal-header">
+				        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        		<h4 class="modal-title" id="msgModalLabel">{{translate.newMessage}}</h4>
+				      		</div>
+				      		<div class="modal-body">
+				       			<div class="form-group">
+									<label for="messageText">{{translate.message}}:</label>
+									<textarea class="form-control" id="messageText" ng-model="body"></textarea>
+								</div>
+				      		</div>
+				      		<div class="modal-footer">
+				        		<button type="button" class="btn btn-default" data-dismiss="modal">{{translate.close}}</button>
+				        		<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#msgStatusModal">{{translate.send}}</button>
+				      		</div>
+				      		
+				    	</div>
+				  	</div>
+				</div>
+				
+				<!-- Modal 2 -->
+				<div class="modal fade" id="msgStatusModal" tabindex="-1" role="dialog" aria-labelledby="msgStatusModalLabel">
+					<div class="modal-dialog" role="document">
+				    	<div class="modal-content">
+				    		<div class="modal-header">
+				        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        		<h4 class="modal-title" id="msgStatusModalLabel">{{translate.sending}}...</h4>
+				      		</div>
+				      		<div class="modal-body">
+				       			<div class="alert alert-info" role="alert">
+				       				{{msgStatus}}
+				       			</div>
+				      		</div>
+				    	</div>
+				  	</div>
+				</div>
+			</form>	
+			<br>
+			<!-- Challenge -->
+			<a ng-if="authenticated && !isSamePerson()" href="./{{routeParams.lang}}/challenges/new/{{user.id}}" class="btn btn-primary btn-block">{{translate.toChallenge}}</a>
+			<br>
+			<!-- Follow -->
+			<a ng-if="authenticated && !isSamePerson() && !isFollowing" ng-click="follow()"  role="button" class="btn btn-primary btn-block">{{translate.follow}}</a>
+			<!-- Unfollow -->
+			<a ng-if="authenticated && !isSamePerson() && isFollowing" ng-click="unfollow()"  role="button" class="btn btn-primary btn-block">{{translate.unfollow}}</a>
+			<br>
+		</div>
+		<div class="col-sm-8">
+			<p>ID: #{{user.id}}</p>
+			<p ng-if="user.age > 0">{{translate.birthday}}: {{user.bMonth}}/{{user.bDay}}/{{user.bYear}} ({{user.age}})</p>
+			<p>{{translate.city}}: {{user.city}}</p>
+			<p>{{translate.country}}: {{user.country}}</p>
+			<p>{{translate.level}}: <span ng-if="user.level == 0">{{translate.unknown}}</span><span ng-if="user.level == 1">{{translate.novice}}</span><span ng-if="user.level == 2">{{translate.beginner}}</span><span ng-if="user.level == 3">{{translate.intermediate}}</span><span ng-if="user.level == 4">{{translate.advanced}}</span><span ng-if="user.level == 5">{{translate.professional}}</span> ({{user.level}})</p>
+			<p>{{translate.levelOfOpponents}}: <span ng-if="user.level == 0">{{translate.unknown}}</span><span ng-if="user.level == 1">{{translate.novice}}</span><span ng-if="user.level == 2">{{translate.beginner}}</span><span ng-if="user.level == 3">{{translate.intermediate}}</span><span ng-if="user.level == 4">{{translate.advanced}}</span><span ng-if="user.level == 5">{{translate.professional}}</span> ({{user.level}} +/- {{user.levelShift}})</p>
+			<hr>
+			
+			<div class="page-header">
+				<h2>{{translate.blog}}</h2>
+			</div>
+			<form class="form" role="form" id="entryForm" ng-if="authenticated">
+				<div class="form-group">
+					<textarea id="text" class="form-control" ng-model="entry" placeholder="{{translate.whatsOnYourMind}}" required></textarea>
+				</div>
+				<button class="btn btn-primary" type="button" ng-click="createBlogEntry(entry)">{{translate.publish}}</button><br><br>
+			</form>
+			<ul class="media-list">
+		  		<li class="media" ng-repeat="entry in entries">
+			  		<div class="media-left">
+			    		<a href="./{{routeParams.lang}}/people/{{entry.author.id}}">
+			      			<img width="64px" class="media-object" ng-src="{{renderImage(entry.author.photo)}}" alt="{{entry.author.fullName}}">
+			    		</a>
+			  		</div>
+			  		<div class="media-body">
+			    		<h4 class="media-heading"><a href="./{{routeParams.lang}}/people/{{entry.user.id}}/blog/{{entry.id}}">{{entry.author.fullName}} <small ng-if="entry.formattedDate !== null">{{entry.formattedDate}}</small></a></h4>
+			    		{{entry.text}}
+			    		
+			    		<hr>
+						<form class="form form-inline" role="form" id="commentForm-{{entry.id}}" ng-if="authenticated">
+							<div class="form-group">
+						    	<input type="text" class="form-control" id="comment" ng-model="comment" placeholder="{{translate.leaveYourComment}}" required>
+						    	<button type="button" class="btn btn-default" ng-click="createBlogEntryComment(entry.id, comment)">{{translate.submit}}</button>
+						    </div>
+						    <br><br>
+						</form>
+						    		
+						<ul class="media-list" ng-if="entry.comments">
+							<li class="media" ng-repeat="comment in entry.comments">
+								<div class="media-left">
+						    		<a href="#">
+						      			<img width="64px" class="media-object" ng-src="{{renderImage(comment.author.photo)}}" alt="{{comment.author.fullName}}">
+						    		</a>
+						  		</div>
+						  		<div class="media-body">
+						  			<h4>{{comment.author.fullName}}  <small ng-if="comment.formattedDate !== null">{{comment.formattedDate}}</small></h4>
+						  			{{comment.text}} 
+						  		</div>
+							</li>
+						</ul> 
+						<button ng-if="(entry.nextPageForComments > entry.currentPageForComments) && (entry !== null) && (entry.comments !== null)" class="btn btn-default btn-block" ng-click="showMoreComments(entry.id, entry.currentPageForComments, entry.nextPageForComments)">{{translate.showMore}}</button>
+			  		</div>			
+				</li>
+			</ul>
+			<button ng-if="(nextPageForEntries > currentPageForEntries) && (entries !== null)" class="btn btn-default btn-block" ng-click="showMoreEntries(currentPageForEntries, nextPageForEntries)">{{translate.showMore}}</button>
+		</div>
+	</div>
+</div>

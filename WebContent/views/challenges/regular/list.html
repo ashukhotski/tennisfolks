@@ -1,0 +1,33 @@
+<div class="page-header">
+	<h1>{{translate.matches}} <small>{{translate.challenges}}</small></h1>
+</div>
+<div class="row">
+	<ul class="nav nav-tabs">
+		<li role="presentation" class="active"><a href="./{{routeParams.lang}}/challenges">{{translate.challenges}}</a></li>
+		<li role="presentation"><a href="./{{routeParams.lang}}/open">{{translate.openChallenges}}</a></li>
+	</ul>
+	<br>
+</div>
+<div class="row">
+	<ul class="media-list">
+		<li class="media" ng-repeat="challenge in challenges">
+  			<div class="media-left">
+    			<a href="./{{routeParams.lang}}/challenges/{{challenge.id}}" ng-if="(authSession.id != challenge.firstPlayerId)">
+      				<img class="media-object" width="64px" ng-src="{{renderImage(challenge.firstPlayer.photo)}}" alt="{{challenge.firstPlayer.fullName}}">
+    			</a>
+    			<a href="./{{routeParams.lang}}/challenges/{{challenge.id}}" ng-if="(authSession.id == challenge.firstPlayerId)">
+      				<img class="media-object" width="64px" ng-src="{{renderImage(challenge.secondPlayer.photo)}}" alt="{{challenge.sencondPlayer.fullName}}">
+    			</a>
+  			</div>
+  			<div class="media-body">
+    			<h4 class="media-heading">{{challenge.firstPlayer.fullName}} vs {{challenge.secondPlayer.fullName}} <small>{{challenge.startDateMonth}}/{{challenge.startDateDay}}/{{challenge.startDateYear}}</small> <a ng-href="./{{routeParams.lang}}/challenges/{{challenge.id}}" class="btn btn-default">{{challenge.firstPlayerScore}} : {{challenge.secondPlayerScore}}</a></h4>	
+    			<div>
+					<a role="button" class="btn btn-default" ng-href="./{{routeParams.lang}}/challenges/{{challenge.id}}">{{translate.view}}</a>
+					<button ng-if="authenticated && (authSession.id == challenge.secondPlayerId) && !challenge.accepted && !challenge.rejected" type="button" class="btn btn-primary" ng-click="accept(challenge.id)">{{translate.accept}}</button>
+					<button ng-if="authenticated && (authSession.id == challenge.secondPlayerId) && !challenge.accepted && !challenge.rejected" type="button" class="btn btn-default" ng-click="reject(challenge.id)">{{translate.reject}}</button>
+				</div>
+  			</div>
+		</li>
+	</ul>
+	<button ng-if="(nextPageForChallenges > currentPageForChallenges) && (challenges !== null)" class="btn btn-default btn-block" ng-click="showMoreChallenges(currentPageForChallenges, nextPageForChallenges)">{{translate.showMore}}</button>
+</div>

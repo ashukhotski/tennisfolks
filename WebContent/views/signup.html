@@ -1,0 +1,32 @@
+<div class="page-header">
+	<h1>{{translate.signUp}} <small>{{translate.createYourProfile}}</small></h1>
+</div>
+<div class="panel panel-primary" ng-if="authenticated">
+	<div class="alert alert-info" role="alert">{{translate.congratulations}} {{translate.yourProfileIsUp}} {{translate.goToYour}} <a href="users/{{authSession.id}}" class="lowercase">{{translate.profile}}</a></div>
+</div>
+<form role="form" id="signupForm" ng-submit="signup(user)" ng-if="!authenticated">
+	<div class="form-group">
+		<label for="firstName">{{translate.firstName}}:</label>
+		<input type="text" class="form-control" id="firstName" ng-model="user.firstName">
+	</div>
+	<div class="form-group">
+		<label for="lastName">{{translate.lastName}}:</label>
+		<input type="text" class="form-control" id="lastName" ng-model="user.lastName">
+	</div>
+	<div class="form-group">
+		<label for="email">{{translate.emailAddress}}:</label>
+		<input type="email" class="form-control" id="email" ng-model="user.email">
+	</div>
+	<div class="form-group">
+		<label for="password">{{translate.password}}:</label>
+		<input type="password" class="form-control" id="password" ng-model="user.password">
+	</div>
+	<div class="form-group" ng-controller="languagesController">
+		<label for="language">{{translate.selectLanguage}}:</label>
+  		<select class="form-control" id="language" ng-model="user.language.code">
+    		<option ng-repeat="language in languages" value="{{language.code}}">{{language.name}}</option>
+  		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">{{translate.signUp}}</button>
+</form>

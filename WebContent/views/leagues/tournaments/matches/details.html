@@ -1,0 +1,76 @@
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>{{match.firstPlayer.fullName}} vs {{match.secondPlayer.fullName}} <small>{{match.startDateMonth}}/{{match.startDateDay}}/{{match.startDateYear}}</small> <a ng-if="authenticated && hasPermission()" role="button" class="btn btn-primary" ng-href="./{{routeParams.lang}}/leagues/{{match.tournament.leagueId}}/manage/tournaments/{{match.tournamentId}}/matches/{{match.id}}">{{translate.edit}}</a></h1>
+		<a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments/{{routeParams.tournamentId}}/matches">{{translate.goBack}}</a>
+	</div>
+	
+	<div class="row" ng-if="(match.location !== null) || (match.description !== null)">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="#info" data-toggle="collapse" data-target="#info">
+					<span class="glyphicon glyphicon-globe"></span> <span class="glyphicon glyphicon-info-sign"></span> {{translate.info}}
+				</a>
+			</div>
+			<div id="info" class="panel-collapse collapse in">
+				<div class="panel-body">
+					<p ng-if="match.location !== null">{{match.location.formattedAddress}} (GPS: {{match.location.latitude}}, {{match.location.longitude}})</p>
+					<p ng-if="match.description !== null">{{match.description}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<a href="./{{routeParams.lang}}/people/{{match.firstPlayer.id}}" class="" >
+				<img class="img img-responsive full-width img-circle" width="100%" ng-src="{{renderImage(match.firstPlayer.photo)}}" alt="{{match.firstPlayer.fullName}}"> 
+			</a>
+		</div>
+		
+		<div class="col-md-6">
+			<img class="img img-responsive" ng-if="match.deleted" src="http://lincolnshirecentre.co.uk/wp-content/uploads/2016/09/cancelled.jpg">
+			<form id="challengeScoreForm" ng-if="!match.deleted && !match.finished && !match.approved && authenticated && hasPermission()">
+				<table class="table-bordered table-condensed">
+					<tbody>
+						<tr>
+							<td class="col-xs-4 text-left">{{match.firstPlayer.fullName}}</td>
+							<td class="col-xs-2 text-center"><input type="text" class="form-control" ng-model="match.firstPlayerScore"></td>
+							<td class="col-xs-2 text-center"><input type="text" class="form-control" ng-model="match.secondPlayerScore"></td>
+							<td class="col-xs-4 text-right">{{match.secondPlayer.fullName}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<label for="detailedScore">{{translate.detailedScore}}</label>
+				<input type="text" class="form-control" id="detailedScore" ng-model="match.detailedScore" placeholder="0:0 0:0 0:0">
+				<label for="matchReview">{{translate.matchReview}}</label>
+				<textarea id="matchReview" class="form-control" ng-model="match.matchReview"></textarea><br>
+				<button type="button" class="btn btn-default" ng-click="updateMatch(match)">{{translate.save}}</button>
+				<button ng-if="!match.finished && ((match.firstPlayerScore > 0) || (match.secondPlayerScore > 0))" type="button" class="btn btn-primary" ng-click="finishMatch()">{{translate.submitScore}}</button>
+				<button ng-if="match.finished && !match.approved && ((match.firstPlayerScore > 0 && match.secondPlayerScore >= 0) || (match.secondPlayerScore > 0 && match.firstPlayerScore >= 0))" type="button" class="btn btn-primary" ng-click="approveMatch()">{{translate.approve}}</button><br><br>
+			</form>
+			
+			<div class="table-responsive">
+				<table class="table" width="100%" ng-if="authenticated && !hasPermission()">
+					<tbody>
+						<tr>
+							<td class="col-xs-4 text-left">{{match.firstPlayer.fullName}}</td>
+							<td class="col-xs-4 text-center active"><b>{{match.firstPlayerScore}}</b> : <b>{{match.secondPlayerScore}}</b><small ng-if="match.detailedScore !== null"><br>({{match.detailedScore}})</small></td>
+							<td class="col-xs-4 text-right">{{match.secondPlayer.fullName}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div>{{match.matchReview}}</div>
+			<div ng-if="hasPermission()" class="form-group">
+				<button ng-if="match.finished && !match.approved" ng-click="approveMatch()" class="btn btn-primary">{{translate.approve}}</button>
+				<button ng-if="!match.finished && !match.approved" ng-click="deleteMatch()" class="btn btn-primary">{{translate.toDelete}}</button>
+				<button ng-if="match.deleted || match.finished" ng-click="restoreMatch()" class="btn btn-primary">{{translate.restore}}</button>
+			</div>
+		</div>
+		
+		<div class="col-md-3">
+			<a href="./{{routeParams.lang}}/people/{{match.secondPlayer.id}}" class="" >
+				<img class="img img-responsive full-width img-circle" width="100%" ng-src="{{renderImage(match.secondPlayer.photo)}}" alt="{{match.secondPlayer.fullName}}"> 
+			</a>
+		</div>
+	</div>
+</div>

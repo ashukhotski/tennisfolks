@@ -1,0 +1,40 @@
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>{{entry.header}} <small>{{entry.formattedDate}}</small></h1>
+		<span class="lowercase">{{translate.writtenBy}}</span> <a href="./{{routeParams.lang}}/people/{{entry.author.id}}">{{entry.author.fullName}}</a> <span class="lowercase">{{translate.from}}</span> <a href="./{{routeParams.lang}}/leagues/{{entry.league.id}}">{{entry.league.name}}</a>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<a href="./{{routeParams.lang}}/leagues/{{entry.league.id}}" class="thumbnail" >
+				<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(entry.league.logo)}}" alt="{{entry.league.name}}"> 
+			</a>
+		</div>
+		<div class="col-md-8">
+			{{entry.text}}
+			
+			<hr>
+			<form class="form form-inline" role="form" id="commentForm" ng-if="authenticated">
+				<div class="form-group">
+					<input type="text" class="form-control" id="comment" ng-model="comment" placeholder="{{translate.leaveYourComment}}" required>
+					<button type="button" class="btn btn-default" ng-click="createBlogEntryComment(comment)">{{translate.submit}}</button>
+				</div>
+				<br><br>
+			</form>
+			    		
+			<ul class="media-list" ng-if="comments">
+				<li class="media" ng-repeat="comment in comments">
+					<div class="media-left">
+				  		<a href="#">
+				   			<img width="64px" class="media-object" ng-src="{{renderImage(comment.author.photo)}}" alt="{{comment.author.fullName}}">
+				   		</a>
+					</div>
+					<div class="media-body">
+						<h4>{{comment.author.fullName}}  <small ng-if="comment.formattedDate !== null">{{comment.formattedDate}}</small></h4>
+						{{comment.text}}
+					</div>
+			    </li>
+			</ul>
+			<button ng-if="(nextPageForComments > currentPageForComments) && (comments !== null)" class="btn btn-default btn-block" ng-click="showMoreComments(currentPageForComments, nextPageForComments)">{{translate.showMore}}</button>
+		</div>
+	</div>
+</div>

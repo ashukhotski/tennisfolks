@@ -1,0 +1,25 @@
+<div ng-if="authenticated && hasPermission()">
+	<div class="page-header">
+		<h1>{{tournament.name}} <small>{{translate.matches}}</small> <a class="btn btn-primary" ng-href="./{{routeParams.lang}}/leagues/{{tournament.leagueId}}/manage/tournaments/{{tournament.id}}/matches/create">{{translate.create}}</a></h1>
+		<a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/manage/tournaments/{{routeParams.tournamentId}}">{{translate.goBack}}</a>
+	</div>
+	<div class="row">
+		<ul class="media-list">
+			<li class="media" ng-repeat="match in matches">
+	  			<div class="media-left">
+	    			<a href="./{{routeParams.lang}}/leagues/{{match.tournament.leagueId}}/tournaments/{{match.tournamentId}}/matches/{{match.id}}">
+	      				<img class="media-object" width="64px" ng-src="{{renderImage(match.tournament.league.logo)}}" alt="{{match.firstPlayer.fullName}} vs {{match.secondPlayer.fullName}}">
+	    			</a>
+	  			</div>
+	  			<div class="media-body">
+	    			<h4 class="media-heading">{{match.firstPlayer.fullName}} vs {{match.secondPlayer.fullName}} <small>{{match.startDateMonth}}/{{match.startDateDay}}/{{match.startDateYear}}</small> <a ng-href="./{{routeParams.lang}}/leagues/{{match.tournament.leagueId}}/tournaments/{{match.tournamentId}}/matches/{{match.id}}" class="btn btn-default">{{match.firstPlayerScore}} : {{match.secondPlayerScore}}</a></h4>	
+	    			<div>
+						<a role="button" class="btn btn-default" ng-href="./{{routeParams.lang}}/leagues/{{match.tournament.leagueId}}/tournaments/{{match.tournamentId}}/matches/{{match.id}}">{{translate.view}}</a>
+						<a role="button" class="btn btn-primary" ng-href="./{{routeParams.lang}}/leagues/{{match.tournament.leagueId}}/manage/tournaments/{{match.tournamentId}}/matches/{{match.id}}">{{translate.edit}}</a>
+					</div>
+	  			</div>
+			</li>
+		</ul>
+		<button ng-if="(nextPageForMatches > currentPageForMatches) && (matches !== null)" class="btn btn-default btn-block" ng-click="showMoreMatches(currentPageForMatches, nextPageForMatches)">{{translate.showMore}}</button>
+	</div>
+</div>

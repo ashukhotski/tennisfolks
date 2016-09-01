@@ -1,0 +1,28 @@
+<div class="page-header">
+	<h1>{{translate.messages}} <small></small></h1>
+</div>
+<div class="row">
+	<form ng-if="authenticated" role="form" id="msgForm" ng-submit="sendFromDialogues(body)">
+		<div class="form-group">
+			<label for="messageText">{{translate.message}}:</label>
+			<textarea class="form-control" id="messageText" ng-model="body"></textarea>
+		</div>
+		<button type="submit" class="btn btn-primary" data-toggle="modal">{{translate.send}}</button>
+		<br>
+	</form>
+	<hr>
+	<ul class="media-list">
+		<li class="media" ng-repeat="message in messages">
+  			<div class="media-left">
+    			<a href="./{{routeParams.lang}}/people/{{message.sender.id}}">
+					<img class="media-object" width="64px" ng-src="{{renderImage(message.sender.photo)}}" alt="{{message.sender.fullName}}">
+    			</a>
+  			</div>
+  			<div class="media-body">
+    			<h4 class="media-heading">{{message.sender.fullName}} <small>{{message.creationDate}}</small></h4>
+    			{{message.body}}
+  			</div>
+		</li>
+	</ul>
+	<button ng-if="(nextPageForMessages > currentPageForMessages) && (messages !== null)" class="btn btn-default btn-block" ng-click="showMoreMessages(currentPageForMessages, nextPageForMessages)">{{translate.showMore}}</button>
+</div>

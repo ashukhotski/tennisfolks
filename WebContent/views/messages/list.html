@@ -1,0 +1,23 @@
+<div class="page-header">
+	<h1>{{translate.dialogues}} <small></small></h1>
+</div>
+<div class="row">
+	<ul class="media-list">
+		<li class="media" ng-repeat="dialogue in dialogues">
+  			<div class="media-left">
+    			<a href="./{{routeParams.lang}}/messages/{{dialogue.dialogueId}}" ng-if="(authSession.id == dialogue.senderId)">
+      				<img class="media-object" width="64px" ng-src="{{renderImage(dialogue.recipient.photo)}}" alt="{{dialogue.recipient.fullName}}">
+    			</a>
+    			<a href="./{{routeParams.lang}}/messages/{{dialogue.dialogueId}}" ng-if="(authSession.id != dialogue.senderId)">
+      				<img class="media-object" width="64px" ng-src="{{renderImage(dialogue.sender.photo)}}" alt="{{dialogue.sender.fullName}}">
+    			</a>
+  			</div>
+  			<div class="media-body">
+    			<h4 class="media-heading" ng-if="(authSession.id == dialogue.senderId)">{{dialogue.recipient.fullName}} <small>{{dialogue.creationDate}}</small></h4>
+    			<h4 class="media-heading" ng-if="(authSession.id != dialogue.senderId)">{{dialogue.sender.fullName}} <small>{{dialogue.creationDate}}</small></h4>
+    			<a href="./{{routeParams.lang}}/messages/{{dialogue.dialogueId}}" class="lowercase">{{translate.viewMessages}}</a>	
+  			</div>
+		</li>
+	</ul>
+	<button ng-if="(nextPageForDialogues > currentPageForDialogues) && (dialogues !== null)" class="btn btn-default btn-block" ng-click="showMoreDialogues(currentPageForDialogues, nextPageForDialogues)">{{translate.showMore}}</button>
+</div>

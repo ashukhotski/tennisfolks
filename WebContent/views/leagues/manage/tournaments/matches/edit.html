@@ -1,0 +1,119 @@
+<div class="container-fluid" ng-if="authenticated && hasPermission()">
+	<div class="page-header">
+		<h1>{{match.firstPlayer.fullName}} vs {{match.secondPlayer.fullName}} <small>{{translate.edit}}</small></h1>
+		<a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/manage/tournaments/{{routeParams.tournamentId}}/matches">{{translate.goBack}}</a>
+	</div>
+	<div class="row">
+		<form role="form" id="newChallengeMatchForm" ng-submit="updateMatch(match)">
+				
+			<div class="col-md-3">
+				<div class="form-group">
+					<label for="firstPlayer">{{translate.firstPlayer}}:</label>
+					<input 
+						type="text" 
+						class="form-control" 
+						ng-model="match.firstPlayerId" 
+						ng-model-options="{ debounce: { default: 500, blur: 100 } }"
+						uib-typeahead="m.id as m.fullName + ' (id: ' + m.id + ')' for m in searchParticipantsById($viewValue) | limitTo:5" 
+						typeahead-min-length="1" 
+						typeahead-editable="false"
+						typeahead-loading="loadingParticipantsResults-1" 
+						typeahead-no-results="noParticipantsResults-1">
+					<span ng-show="loadingParticipantsResults-1" class="glyphicon glyphicon-refresh"></span>
+					<div ng-show="noParticipantsResults-1">
+						<i class="glyphicon glyphicon-remove"></i> {{translate.noResults}}
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="stage">{{translate.stage}}</label>
+					<select id="stage" name="stage" ng-options="stage.value as stage.label for stage in stages" ng-model="match.stage" class="form-control" required></select>
+				</div>
+				<div class="form-group">
+					<label for="startDate">{{translate.startDate}}</label>
+					<div id="startDate" class="controls form-inline">
+						<label for="startMonth">{{translate.month}}:</label>
+						<select id="startMonth" name="startMonth" ng-options="month for month in months" ng-model="match.startDateMonth" class="form-control" required></select>
+						<label for="startDay">{{translate.day}}:</label>
+						<select id="startDay" name="startDay" ng-options="day for day in days" ng-model="match.startDateDay" class="form-control" required></select>
+						<label for="startYear">{{translate.year}}:</label>
+						<select id="startYear" name="startYear" ng-options="year for year in years" ng-model="match.startDateYear" class="form-control" required></select>
+					</div>
+				</div>
+		
+				<div class="form-group">
+					<label for="country">{{translate.country}}:</label>
+					<select class="form-control" id="country" ng-change="getDivisions(match.country)" ng-model="match.country" required>
+				   		<option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="state">{{translate.state}}:</label>
+					<select class="form-control" id="state" ng-model="match.state">
+				   		<option ng-repeat="state in states" value="{{state.adminCode}}">{{state.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="city">{{translate.city}}:</label>
+					<input type="text" id="city" 
+						ng-model="match.city" 
+						ng-model-options="{ debounce: { default: 500, blur: 100 } }"
+						typeahead-on-select="onCitySelect($item)" 
+						typeahead-min-length="2"  
+						uib-typeahead="city.name for city in getCities($viewValue, match.state, match.country) | limitTo:5" 
+						typeahead-loading="loadingLocations" 
+						typeahead-no-results="noResults" 
+						class="form-control" required>
+				    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+				    <div ng-show="noResults">
+				    	<i class="glyphicon glyphicon-remove"></i> {{translate.noResults}}
+				    </div>
+					<input type="hidden" class="form-control" id="cityId" ng-model="match.cityGeonameId">
+				</div>
+					
+				<div class="form-group">
+					<label for="address">{{translate.address}}:</label>
+					<input type="text" class="form-control" id="address" ng-model="match.address" required>
+				</div>
+				<div class="form-group">
+					<label for="description">{{translate.description}}:</label>
+					<textarea class="form-control" id="description" ng-model="match.description">{{match.description}}</textarea>
+				</div>
+				<div class="form-group">
+					<label for="surface">{{translate.surface}}:</label>
+					<select class="form-control" id="surface" ng-model="match.surfaceType">
+				   		<option value=""></option>
+				   		<option value="Clay">{{translate.clay}}</option>
+				   		<option value="Grass">{{translate.grass}}</option>
+				   		<option value="Hard">{{translate.hard}}</option>
+					</select>
+				</div>
+			
+				<button type="submit" class="btn btn-primary">{{translate.save}}</button>
+		
+			</div>
+		
+			<div class="col-md-3">
+				<div class="form-group">
+					<label for="secondPlayer">{{translate.secondPlayer}}:</label>
+					<input 
+						type="text" 
+						class="form-control" 
+						ng-model="match.secondPlayerId" 
+						ng-model-options="{ debounce: { default: 500, blur: 100 } }"
+						uib-typeahead="m.id as m.fullName + ' (id: ' + m.id + ')' for m in searchParticipantsById($viewValue) | limitTo:5" 
+						typeahead-min-length="1" 
+						typeahead-editable="false"
+						typeahead-loading="loadingParticipantsResults-2" 
+						typeahead-no-results="noParticipantsResults-2">
+					<span ng-show="loadingParticipantsResults-2" class="glyphicon glyphicon-refresh"></span>
+					<div ng-show="noParticipantsResults-2">
+						<i class="glyphicon glyphicon-remove"></i> {{translate.noResults}}
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

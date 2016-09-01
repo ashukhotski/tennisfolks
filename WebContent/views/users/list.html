@@ -1,0 +1,23 @@
+<div class="page-header">
+	<h1>{{translate.people}} <small></small></h1>
+</div>
+<div ng-if="authenticated">
+	<input type="checkbox" ng-model="nearby" ng-click="showNearbyOnly(nearby)"> {{translate.nearby}}
+	<hr>
+</div>
+<div class="row">
+	<div class="col-sm-3 col-md-3" ng-repeat="user in users">
+		<div class="thumbnail">
+			<div class="image">
+				<a ng-href="./{{routeParams.lang}}/people/{{user.id}}">
+					<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(user.photo)}}" alt="{{user.fullName}}">
+				</a>
+			</div>
+			<div class="caption">
+				<p><b><a ng-href="./{{routeParams.lang}}/people/{{user.id}}">{{user.fullName}}</a></b></p>
+				<p><a ng-if="authenticated && !isSamePerson(authSession.id, user.id)" href="./{{routeParams.lang}}/challenges/new/{{user.id}}" class="btn btn-primary" role="button">{{translate.toChallenge}}</a> <a href="./{{routeParams.lang}}/people/{{user.id}}" class="btn btn-default" role="button">{{translate.view}}</a></p>
+			</div>
+		</div>
+	</div>
+	<button ng-if="(nextPage > currentPage) && (users !== null)" class="btn btn-default btn-block" ng-click="showMore(currentPage, nextPage)">{{translate.showMore}}</button>
+</div>

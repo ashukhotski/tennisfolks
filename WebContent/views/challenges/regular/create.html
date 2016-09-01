@@ -1,0 +1,85 @@
+<div class="container-fluid" ng-if="authenticated">
+	<div class="page-header">
+		<h1>{{translate.newChallenge}} <small>{{firstPlayer.fullName}} vs {{secondPlayer.fullName}}</small></h1>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<a href="./{{routeParams.lang}}/people/{{firstPlayer.id}}" class="" >
+				<img class="img img-responsive full-width img-circle" width="100%" ng-src="{{renderImage(firstPlayer.photo)}}" alt="{{firstPlayer.fullName}}"> 
+			</a>
+		</div>
+		
+		<div class="col-md-6">
+			<form role="form" id="newChallengeMatchForm" ng-submit="create(challenge)">
+				<div class="form-group">
+					<label for="startDate">{{translate.startDate}}</label>
+					<div id="startDate" class="controls form-inline">
+						<label for="startMonth">{{translate.month}}:</label>
+						<select id="startMonth" name="startMonth" ng-options="month for month in months" ng-model="challenge.startDateMonth" class="form-control" required></select>
+						<label for="startDay">{{translate.day}}:</label>
+						<select id="startDay" name="startDay" ng-options="day for day in days" ng-model="challenge.startDateDay" class="form-control" required></select>
+						<label for="startYear">{{translate.year}}:</label>
+						<select id="startYear" name="startYear" ng-options="year for year in years" ng-model="challenge.startDateYear" class="form-control" required></select>
+					</div>
+				</div>
+		
+				<div class="form-group">
+					<label for="country">{{translate.country}}:</label>
+					<select class="form-control" id="country" ng-change="getDivisions(challenge.country)" ng-model="challenge.country" required>
+				   		<option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="state">{{translate.state}}:</label>
+					<select class="form-control" id="state" ng-model="challenge.state">
+				   		<option ng-repeat="state in states" value="{{state.adminCode}}">{{state.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="city">{{translate.city}}:</label>
+					<input type="text" id="city" 
+						ng-model="challenge.city" 
+						ng-model-options="{ debounce: { default: 500, blur: 100 } }"
+						typeahead-on-select="onCitySelect($item)" 
+						typeahead-min-length="2"  
+						uib-typeahead="city.name for city in getCities($viewValue, challenge.state, challenge.country) | limitTo:5" 
+						typeahead-loading="loadingLocations" 
+						typeahead-no-results="noResults" 
+						class="form-control" required>
+				    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+				    <div ng-show="noResults">
+				    	<i class="glyphicon glyphicon-remove"></i> {{translate.noResults}}
+				    </div>
+					<input type="hidden" class="form-control" id="cityId" ng-model="challenge.cityGeonameId">
+				</div>
+					
+				<div class="form-group">
+					<label for="address">{{translate.address}}:</label>
+					<input type="text" class="form-control" id="address" ng-model="challenge.address" required>
+				</div>
+				<div class="form-group">
+					<label for="description">{{translate.description}}:</label>
+					<textarea class="form-control" id="description" ng-model="challenge.description">{{challenge.description}}</textarea>
+				</div>
+				<div class="form-group">
+					<label for="surface">{{translate.surface}}:</label>
+					<select class="form-control" id="surface" ng-model="challenge.surfaceType">
+				   		<option value=""></option>
+				   		<option value="Clay">{{translate.clay}}</option>
+				   		<option value="Grass">{{translate.grass}}</option>
+				   		<option value="Hard">{{translate.hard}}</option>
+					</select>
+				</div>
+			
+				<button type="submit" class="btn btn-primary">{{translate.create}}</button>
+			</form>
+		
+		</div>
+		
+		<div class="col-md-3">
+			<a href="./{{routeParams.lang}}/people/{{secondPlayer.id}}" class="" >
+				<img class="img img-responsive full-width img-circle" width="100%" ng-src="{{renderImage(secondPlayer.photo)}}" alt="{{secondPlayer.fullName}}"> 
+			</a>
+		</div>
+	</div>
+</div>

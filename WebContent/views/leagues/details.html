@@ -1,0 +1,115 @@
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>{{league.name}} <small></small> <a ng-if="authenticated && hasPermission()" href="./{{routeParams.lang}}/leagues/{{league.id}}/edit" class="btn btn-primary" role="button">{{translate.edit}}</a> <a ng-if="authenticated && hasPermission()" href="./{{routeParams.lang}}/leagues/{{league.id}}/manage" class="btn btn-primary" role="button">{{translate.manage}}</a></h1>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="thumbnail" >
+				<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(league.logo)}}" alt="{{league.name}}"> 
+				<!-- Button trigger modal -->
+				<button ng-if="authenticated && hasPermission()" type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#uploadLogoModal">
+					{{translate.changePhoto}}
+				</button>
+			</div>
+			
+			<!-- Change logo -->
+			<div ng-if="authenticated && hasPermission()" ng-controller="leagueDetailsController">
+				<div class="modal fade" id="uploadLogoModal" tabindex="-1" role="dialog" aria-labelledby="uploadLogoModalLabel">
+					<div class="modal-dialog" role="document">
+					   	<div class="modal-content">
+					  		<div class="modal-header">
+					   			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					   			<h4 class="modal-title" id="uploadLogoModalLabel">{{translate.chooseNewPhoto}}</h4>
+					   		</div>
+					      	<div class="modal-body">
+					      		<form role="form" class="form-inline" id="uploadLogoForm">
+						    		<div class="form-group">
+										<input type="file" class="filestyle" file-model="logoFile" accept="image/*"><br>
+									</div>
+									<button class="btn btn-default" type="button" ng-click="uploadFile('logo')">{{translate.upload}}</button>
+								</form>
+								<hr><p>{{translate.preview}}:</p>
+								<img width="250px" class="img-responsive center-block" ng-if="image.id > 0" ng-src="data:{{image.mimetype}};base64,{{image.contentBase64Encoded}}">
+					      	</div>
+					      	<div class="modal-footer">
+					      		<form role="form" id="setLogoForm">
+					        		<button type="button" class="btn btn-default" ng-click="discard(image.id)" data-dismiss="modal">{{translate.cancel}}</button>
+					        		<button class="btn btn-primary" type="button" ng-click="setLogo(image.id)" >{{translate.save}}</button>
+					        	</form>
+					      	</div>     		
+					    </div>
+					</div>
+				</div>			
+			</div>		
+			<!-- End of Change logo -->	
+			
+			<!-- Join the league -->
+			<div class="text-center" ng-init="membershipCheck(authSession.id)">
+				<button ng-if="authenticated && !isAccepted && !isRequestor && !isDeleted" type="button" class="btn btn-primary btn-block" ng-click="join()">{{translate.join}}</button>
+				<span ng-if="authenticated && !isAccepted && isRequestor || isRejected" class="btn btn-default btn-block">{{translate.requestNotAcceptedYet}}</span>
+				<span ng-if="authenticated && isAccepted" class="btn btn-default btn-block">{{translate.youAreMember}}</span>
+				<span ng-if="authenticated && isDeleted" class="btn btn-danger btn-block">{{translate.membershipCancelled}}</span>
+			</div>
+		</div>
+		<div class="col-md-8">		
+			<div class="panel panel-primary">
+				<div class="panel-heading"><span class="glyphicon glyphicon-info-sign"></span> {{translate.info}}</div>
+				<div class="panel-body">
+					<p>{{translate.type}}: {{league.open ? translate.openLeague : translate.closedLeague}}</p>
+					<p ng-if="league.country !== null || league.city !== null">{{translate.location}}: {{league.city}}, {{league.country}}</p>
+					<p>{{translate.founder}}: <a href="./{{routeParams.lang}}/people/{{league.creator.id}}">{{league.creator.fullName}}</a></p>
+					<p>{{translate.manager}}: <a href="./{{routeParams.lang}}/people/{{league.manager.id}}">{{league.manager.fullName}}</a></p>
+					<br ng-if="league.description !== null">
+					{{league.description}}
+				</div>
+			</div>
+			
+			<div class="page-header">
+				<h2>{{translate.tournaments}} <a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments" class="btn btn-default">{{translate.view}}</a></h2>
+			</div>
+			<div class="page-header">
+				<h2>{{translate.blog}}</h2>
+			</div>
+			<form class="form" role="form" id="entryForm" ng-if="authenticated && hasPermission()">
+				<div class="form-group">
+					<input id="header" type="text" class="form-control" ng-model="entry.header" placeholder="{{translate.blogEntryHeader}}..." required>
+				</div>
+				<div class="form-group">
+					<textarea id="text" class="form-control" ng-model="entry.text" placeholder="{{translate.blogEntryText}}..." required></textarea>
+				</div>
+				<button class="btn btn-primary" type="button" ng-click="createBlogEntry(entry)">{{translate.publish}}</button><br><br>
+			</form>
+			<ul class="media-list">
+		  		<li class="media" ng-repeat="entry in entries">
+			  		<div class="media-left">
+			    		<a href="./{{routeParams.lang}}/people/{{entry.author.id}}">
+			      			<img width="64px" class="media-object" ng-src="{{renderImage(entry.author.photo)}}" alt="{{entry.author.fullName}}">
+			    		</a>
+			  		</div>
+			  		<div class="media-body">
+			    		<h4 class="media-heading"><a href="./{{routeParams.lang}}/leagues/{{entry.league.id}}/blog/{{entry.id}}">{{entry.header}}</a> <small ng-if="entry.formattedDate !== null">{{entry.formattedDate}}</small></h4>
+			    		<small>{{translate.writtenBy}} {{entry.author.fullName}}</small>
+			    	</div>
+			    </li>
+			</ul>
+			<button ng-if="(nextPageForEntries > currentPageForEntries) && (entries !== null)" class="btn btn-default btn-block" ng-click="showMoreEntries(currentPageForEntries, nextPageForEntries)">{{translate.showMore}}</button>
+		</div>
+	</div>
+	
+	<br>
+	<h2>Members</h2><hr>
+	<div class="row">
+		<div class="col-sm-3 col-md-3 col-lg-3" ng-repeat="member in members">
+			<div class="thumbnail">
+				<div class="image">
+					<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(member.user.photo)}}" alt="{{member.user.fullName}}">
+				</div>
+				<div class="caption">
+					<p><b><a ng-href="./{{routeParams.lang}}/people/{{member.user.id}}">{{member.user.fullName}}</a></b></p>
+					<p><a ng-if="authenticated && !isSamePerson(authSession.id, member.user.id)" href="./{{routeParams.lang}}/challenges/new/{{member.user.id}}" class="btn btn-primary" role="button">{{translate.toChallenge}}</a> <a href="./{{routeParams.lang}}/people/{{member.user.id}}" class="btn btn-default" role="button">{{translate.view}}</a></p>
+				</div>
+			</div>
+		</div>
+		<button ng-if="(nextPageForMembers > currentPageForMembers) && (members !== null)" class="btn btn-default btn-block" ng-click="showMoreMembers(currentPageForMembers, nextPageForMembers)">{{translate.showMore}}</button>
+	</div>
+</div>

@@ -1,0 +1,104 @@
+<div class="container-fluid" ng-if="authenticated && isSamePerson">
+	<div class="page-header">
+		<h1>{{user.fullName}} <small>{{translate.editPersonalData}}</small></h1>
+	</div>
+	<form role="form" id="updateUserForm" ng-submit="update(user)">
+		<div class="form-group">
+			<label for="firstName">{{translate.firstName}}:</label>
+			<input type="text" class="form-control" id="firstName" ng-model="user.firstName" required>
+		</div>
+		<div class="form-group">
+			<label for="lastName">{{translate.lastName}}:</label>
+			<input type="text" class="form-control" id="lastName" ng-model="user.lastName" required>
+		</div>
+		<div class="form-group">
+			<label class="radio-inline">
+		    	<input type="radio" name="male" ng-model="user.gender" value="male">{{translate.male}}
+		    </label>
+		    <label class="radio-inline">
+		    	<input type="radio" name="femail" ng-model="user.gender" value="female">{{translate.female}}
+		    </label>
+		</div>
+		<div class="form-group">
+			<label for="birthday">{{translate.birthday}}</label>
+			<div id="birthday" class="controls form-inline">
+				<label for="bMonth">{{translate.month}}:</label>
+				<select id="bMonth" name="bMonth" ng-options="month for month in months" ng-model="user.bMonth" class="form-control"></select>
+				<label for="bDay">{{translate.day}}:</label>
+				<select id="bDay" name="bDay" ng-options="day for day in days" ng-model="user.bDay" class="form-control"></select>
+				<label for="bYear">{{translate.year}}:</label>
+				<select id="bYear" name="bYear" ng-options="year for year in years" ng-model="user.bYear" class="form-control"></select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="email">{{translate.emailAddress}}:</label>
+			<input type="email" class="form-control" id="email" ng-model="user.email" required>
+		</div>
+		<div class="form-group">
+			<label for="currentPassword">{{translate.password}}:</label>
+			<input type="password" class="form-control" id="currentPassword" ng-model="user.currentPassword" required>
+		</div>
+		<div class="form-group">
+			<label for="newPassword">{{translate.newPassword}}:</label>
+			<input type="password" class="form-control" id="newPassword" ng-model="user.newPassword">
+		</div>
+		
+		<div class="form-group">
+			<label for="country">{{translate.country}}:</label>
+			<select class="form-control" id="country" ng-change="getDivisions(user.country)" ng-model="user.country">
+		   		<option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="state">{{translate.state}}:</label>
+			<select class="form-control" id="state" ng-model="user.state">
+		   		<option ng-repeat="state in states" value="{{state.adminCode}}">{{state.name}}</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="city">{{translate.city}}:</label>
+			<input type="text" id="city" 
+				ng-model="user.city" 
+				ng-model-options="{ debounce: { default: 500, blur: 100 } }"
+				typeahead-on-select="onCitySelect($item)" 
+				typeahead-min-length="2"  
+				uib-typeahead="city.name for city in getCities($viewValue, user.state, user.country) | limitTo:5" 
+				typeahead-loading="loadingLocations" 
+				typeahead-no-results="noResults" 
+				class="form-control">
+		    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+		    <div ng-show="noResults">
+		    	<i class="glyphicon glyphicon-remove"></i> {{translate.noResults}}
+		    </div>
+			<input type="hidden" class="form-control" id="cityId" ng-model="user.cityGeonameId">
+		</div>
+			
+		<div class="form-group">
+			<label for="address">{{translate.address}}:</label>
+			<input type="text" class="form-control" id="address" ng-model="user.address">
+		</div>
+		<div class="form-group">
+			<label for="phone">{{translate.phoneNumber}}:</label>
+			<input type="text" class="form-control" id="phone" ng-model="user.phone">
+		</div>
+		
+		<div class="form-group">
+			<label for="level">{{translate.level}}:</label>
+	  		<select class="form-control" id="level" ng-model="user.level" ng-options="level.value as level.label for level in levelOptions"></select>
+		</div>
+		
+		<div class="form-group">
+			<label for="levelShift">{{translate.levelOfOpponents}}:</label>
+	  		<select class="form-control" id="levelShift" ng-model="user.levelShift" ng-options="shift.value as shift.label for shift in levelShiftOptions"></select>
+		</div>
+		
+		<div class="form-group">
+			<label for="language">{{translate.selectLanguage}}:</label>
+	  		<select class="form-control" id="language" ng-model="user.language.code">
+	    		<option ng-repeat="language in languages" value="{{language.code}}">{{language.name}}</option>
+	  		</select>
+		</div>
+	
+		<button type="submit" class="btn btn-primary">{{translate.save}}</button>
+	</form>
+</div>

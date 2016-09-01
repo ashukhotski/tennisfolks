@@ -1,0 +1,74 @@
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>{{challenge.firstPlayer.fullName}} vs {{challenge.secondPlayer.fullName}} <small>{{challenge.startDateMonth}}/{{challenge.startDateDay}}/{{challenge.startDateYear}}</small></h1>
+	</div>
+	<form id="challengeMatchForm" class="form">
+		<div class="controls form-inline row" ng-if="authenticated && (authSession.id == challenge.secondPlayerId) && !challenge.accepted && !challenge.rejected">
+			<button type="button" class="btn btn-primary" ng-click="accept()">Accept</button>
+			<button type="button" class="btn btn-default" ng-click="reject()">Reject</button>
+		</div>
+	</form>
+	
+	<div class="row" ng-if="(challenge.location !== null) || (challenge.description !== null)">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="#info" data-toggle="collapse" data-target="#info">
+					<span class="glyphicon glyphicon-globe"></span> <span class="glyphicon glyphicon-info-sign"></span> {{translate.info}}
+				</a>
+			</div>
+			<div id="info" class="panel-collapse collapse in">
+				<div class="panel-body">
+					<p ng-if="challenge.location !== null">{{challenge.location.formattedAddress}} (GPS: {{challenge.location.latitude}}, {{challenge.location.longitude}})</p>
+					<p ng-if="challenge.description !== null">{{challenge.description}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<a href="./{{routeParams.lang}}/people/{{challenge.firstPlayer.id}}" class="" >
+				<img class="img img-responsive full-width img-circle" width="100%" ng-src="{{renderImage(challenge.firstPlayer.photo)}}" alt="{{challenge.firstPlayer.fullName}}"> 
+			</a>
+		</div>
+		
+		<div class="col-md-6">
+			<form id="challengeScoreForm" ng-if="!challenge.finished && challenge.accepted && authenticated && ((authSession.id == challenge.firstPlayerId) || (authSession.id == challenge.secondPlayerId))">
+				<table class="table-bordered table-condensed">
+					<tbody>
+						<tr>
+							<td class="col-xs-4 text-left">{{challenge.firstPlayer.fullName}}</td>
+							<td class="col-xs-2 text-center"><input type="text" class="form-control" ng-model="challenge.firstPlayerScore"></td>
+							<td class="col-xs-2 text-center"><input type="text" class="form-control" ng-model="challenge.secondPlayerScore"></td>
+							<td class="col-xs-4 text-right">{{challenge.secondPlayer.fullName}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<label for="detailedScore">{{translate.detailedScore}}</label>
+				<input type="text" class="form-control" id="detailedScore" ng-model="challenge.detailedScore" placeholder="0:0 0:0 0:0">
+				<label for="matchReview">{{translate.matchReview}}</label>
+				<textarea id="matchReview" class="form-control" ng-model="challenge.matchReview"></textarea><br>
+				<button type="button" class="btn btn-default" ng-click="update(challenge)">{{translate.save}}</button>
+				<button ng-if="!challenge.finished && (authSession.id == challenge.firstPlayerId) && ((challenge.firstPlayerScore > 0) || (challenge.secondPlayerScore > 0))" type="button" class="btn btn-primary" ng-click="finish()">Submit score</button><br><br>
+			</form>
+			
+			<div class="table-responsive">
+				<table class="table" width="100%" ng-if="challenge.finished || (challenge.accepted && (authSession.id != challenge.firstPlayerId) && (authSession.id != challenge.secondPlayerId))">
+					<tbody>
+						<tr>
+							<td class="col-xs-4 text-left">{{challenge.firstPlayer.fullName}}</td>
+							<td class="col-xs-4 text-center active"><b>{{challenge.firstPlayerScore}}</b> : <b>{{challenge.secondPlayerScore}}</b><small ng-if="challenge.detailedScore !== null"><br>({{challenge.detailedScore}})</small></td>
+							<td class="col-xs-4 text-right">{{challenge.secondPlayer.fullName}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div>{{challenge.matchReview}}</div>
+		</div>
+		
+		<div class="col-md-3">
+			<a href="./{{routeParams.lang}}/people/{{challenge.secondPlayer.id}}" class="" >
+				<img class="img img-responsive full-width img-circle" width="100%" ng-src="{{renderImage(challenge.secondPlayer.photo)}}" alt="{{challenge.secondPlayer.fullName}}"> 
+			</a>
+		</div>
+	</div>
+</div>

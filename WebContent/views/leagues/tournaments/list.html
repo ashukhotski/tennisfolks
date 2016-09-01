@@ -1,0 +1,23 @@
+<div class="page-header">
+	<h1>{{league.name}} <small>{{translate.tournaments}}</small></h1>
+	<a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}">{{translate.goBack}}</a>
+</div>
+
+<div class="row">
+	<ul class="media-list">
+		<li class="media" ng-repeat="tournament in tournaments">
+			<div class="media-left">
+	   			<a href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments/{{tournament.id}}">
+	   				<img class="media-object" width="64px" ng-src="{{renderImage(tournament.league.logo)}}" alt="{{tournament.name}}">
+	   			</a>
+			</div>
+			<div class="media-body">
+	  			<h4 class="media-heading">{{tournament.name}} <small>{{tournament.startDateMonth}}/{{tournament.startDateDay}}/{{tournament.startDateYear}} - {{tournament.endDateMonth}}/{{tournament.endDateDay}}/{{tournament.endDateYear}}</small></h4>	
+	   			<div>
+					<a role="button" class="btn btn-default" ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments/{{tournament.id}}">{{translate.view}}</a>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
+<button ng-if="(nextPageForTournaments > currentPageForTournaments) && (tournaments !== null)" class="btn btn-default btn-block" ng-click="showMoreTournaments(currentPageForTournaments, nextPageForTournaments)">{{translate.showMore}}</button>

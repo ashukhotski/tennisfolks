@@ -1,0 +1,64 @@
+<div class="container-fluid" ng-if="authenticated">
+	<div class="page-header">
+		<h1>{{translate.newLeague}} <small>{{translate.createYourOwnLeague}}</small></h1>
+	</div>
+	<form role="form" id="newLeagueForm" ng-submit="create(league)">
+		<div class="form-group">
+			<label for="name">{{translate.name}}:</label>
+			<input type="text" id="name" ng-model="league.name" class="form-control">
+		</div>
+		<div class="form-group">
+			<label class="radio-inline">
+		    	<input type="radio" name="open" ng-model="league.open" value="1">{{translate.openLeague}}
+		    </label>
+		    <label class="radio-inline">
+		    	<input type="radio" name="closed" ng-model="league.open" value="0">{{translate.closedLeague}}
+		    </label>
+		</div>
+		<div class="form-group">
+			<label for="country">{{translate.country}}:</label>
+			<select class="form-control" id="country" ng-change="getDivisions(league.country)" ng-model="league.country">
+		   		<option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="state">{{translate.state}}:</label>
+			<select class="form-control" id="state" ng-model="league.state">
+		   		<option ng-repeat="state in states" value="{{state.adminCode}}">{{state.name}}</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="city">{{translate.city}}:</label>
+			<input type="text" id="city" 
+				ng-model="league.city" 
+				ng-model-options="{ debounce: { default: 500, blur: 100 } }"
+				typeahead-on-select="onCitySelect($item)" 
+				typeahead-min-length="2"  
+				uib-typeahead="city.name for city in getCities($viewValue, league.state, league.country) | limitTo:5" 
+				typeahead-loading="loadingLocations" 
+				typeahead-no-results="noResults" 
+				class="form-control">
+		    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+		    <div ng-show="noResults">
+		    	<i class="glyphicon glyphicon-remove"></i> {{translate.noResults}}
+		    </div>
+			<input type="hidden" class="form-control" id="cityId" ng-model="league.cityGeonameId">
+		</div>
+			
+		<div class="form-group">
+			<label for="description">{{translate.description}}:</label>
+			<textarea class="form-control" id="description" ng-model="league.description">{{league.description}}</textarea>
+		</div>
+		<!-- 
+		<div class="form-group">
+			<label for="creator">{{translate.founder}}:</label>
+			<input readonly type="text" class="form-control" id="creator" value="{{user.fullName}}">
+		</div>
+		<div class="form-group">
+			<label for="manager">{{translate.manager}}:</label>
+			<input readonly type="text" class="form-control" id="manager" value="{{user.fullName}}">
+		</div>
+		-->
+		<button type="submit" class="btn btn-primary">{{translate.create}}</button>
+	</form>
+</div>

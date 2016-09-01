@@ -1,0 +1,33 @@
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>{{translate.contestant}}: {{challenge.firstPlayer.fullName}} <small>{{challenge.startDateMonth}}/{{challenge.startDateDay}}/{{challenge.startDateYear}}</small> <button ng-if="authenticated && (authSession.id != challenge.firstPlayerId) && !challenge.accepted" type="button" class="btn btn-primary" ng-click="accept()">{{translate.accept}}</button></h1>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-4">
+			<a href="./{{routeParams.lang}}/people/{{challenge.firstPlayer.id}}" class="" >
+				<img class="img img-responsive full-width img-circle" width="100%" ng-src="{{renderImage(challenge.firstPlayer.photo)}}" alt="{{challenge.firstPlayer.fullName}}"> 
+			</a>
+		</div>
+		
+		<div class="col-md-8">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<a href="#info" data-toggle="collapse" data-target="#info">
+						<span class="glyphicon glyphicon-globe"></span> <span class="glyphicon glyphicon-info-sign"></span> {{translate.info}}
+					</a>
+				</div>
+				<div id="info" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<p ng-if="challenge.location !== null">{{challenge.location.formattedAddress}} (GPS: {{challenge.location.latitude}}, {{challenge.location.longitude}})</p>
+						<p ng-if="challenge.description !== null">{{challenge.description}}</p>
+					</div>
+				</div>
+			</div>
+			<form ng-if="authenticated && (authSession.id != challenge.firstPlayerId) && !challenge.accepted" role="form" id="acceptChallenge" class="form">
+				<button class="btn btn-primary" type="button" ng-click="accept()">{{translate.accept}}</button>
+			</form>
+			<a ng-if="challenge.accepted && (challenge.matchId > 0)" class="btn btn-default" href="./{{routeParams.lang}}/challenges/{{challenge.matchId}}">{{translate.acceptedChallenge}}</a>
+		</div>
+	</div>
+</div>

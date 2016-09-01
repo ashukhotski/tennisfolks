@@ -1,0 +1,36 @@
+<div class="page-header">
+	<h1>{{tournament.name}} <small>{{tournament.startDateMonth}}/{{tournament.startDateDay}}/{{tournament.startDateYear}} - {{tournament.endDateMonth}}/{{tournament.endDateDay}}/{{tournament.endDateYear}}</small> <a ng-if="authenticated && hasPermission()" href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/manage/tournaments/{{routeParams.tournamentId}}" class="btn btn-primary">{{translate.manage}}</a></h1>
+	<a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments">{{translate.goBack}}</a>
+</div>
+
+<div class="row">
+	<div class="col-md-4">
+		<div class="thumbnail" >
+			<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(league.logo)}}" alt="{{league.name}}"> 
+		</div>
+		
+		<button ng-if="authenticated && !isParticipant && !isConfirmedParticipant" class="btn btn-primary btn-block" ng-click="participate()">{{translate.participate}}</button>
+		<span ng-if="authenticated && isParticipant && !isConfirmedParticipant" class="btn btn-default btn-block">{{translate.waitingForConfirmation}}</span>
+		<span ng-if="authenticated && isConfirmedParticipant" class="btn btn-default btn-block">{{translate.confirmed}}</span>
+	</div>
+	<div class="col-md-8">		
+		<div class="panel panel-primary">
+			<div class="panel-heading"><span class="glyphicon glyphicon-info-sign"></span> {{translate.info}}</div>
+			<div class="panel-body">
+				<p>{{translate.numberOfPlayers}}: {{tournament.numberOfPlayers}}</p>
+				<p>{{translate.levelOfOpponents}}: <span ng-if="tournament.targetLevel == 0">{{translate.unknown}}</span><span ng-if="tournament.targetLevel == 1">{{translate.novice}}</span><span ng-if="tournament.targetLevel == 2">{{translate.beginner}}</span><span ng-if="tournament.targetLevel == 3">{{translate.intermediate}}</span><span ng-if="tournament.targetLevel == 4">{{translate.advanced}}</span><span ng-if="tournament.targetLevel == 5">{{translate.professional}}</span> ({{tournament.targetLevel}} +/- {{tournament.levelShift}})</p>
+				<p>{{translate.supervisor}}: <a href="./{{routeParams.lang}}/people/{{tournament.supervisor.id}}">{{tournament.supervisor.fullName}}</a></p>
+				<p>{{translate.league}}: <a href="./{{routeParams.lang}}/leagues/{{tournament.league.id}}">{{tournament.league.name}}</a></p>
+				<br ng-if="tournament.description !== null">
+				{{tournament.description}}
+			</div>
+		</div>
+		
+		<div class="page-header">
+			<h2>{{translate.participants}} <a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments/{{routeParams.tournamentId}}/participants" class="btn btn-default">{{translate.view}}</a></h2>
+		</div>
+		<div class="page-header">
+			<h2>{{translate.matches}} <a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments/{{routeParams.tournamentId}}/matches" class="btn btn-default">{{translate.view}}</a></h2>
+		</div>
+	</div>
+</div>

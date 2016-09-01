@@ -1,0 +1,27 @@
+<div class="page-header">
+	<h1>{{translate.connections}} <small>{{translate.following}}</small></h1>
+</div>
+
+<div class="row">
+	<ul class="nav nav-tabs">
+		<li role="presentation"><a href="./{{routeParams.lang}}/people/{{routeParams.id}}/followers">{{translate.followers}}</a></li>
+		<li role="presentation" class="active"><a href="./{{routeParams.lang}}/people/{{routeParams.id}}/following">{{translate.following}}</a></li>
+	</ul>
+	<br>
+</div>
+<div class="row">
+	<div class="col-sm-3 col-md-3" ng-repeat="user in users">
+		<div class="thumbnail">
+			<div class="image">
+				<a ng-href="./{{routeParams.lang}}/people/{{user.id}}">
+					<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(user.photo)}}" alt="{{user.fullName}}">
+				</a>
+			</div>
+			<div class="caption">
+				<p><b><a ng-href="./{{routeParams.lang}}/people/{{user.id}}">{{user.fullName}}</a></b></p>
+				<p><a ng-if="authenticated && !isSamePerson(user.id)" href="./{{routeParams.lang}}/challenges/new/{{user.id}}" class="btn btn-primary" role="button">{{translate.toChallenge}}</a> <a href="./{{routeParams.lang}}/people/{{user.id}}" class="btn btn-default" role="button">{{translate.view}}</a></p>
+			</div>
+		</div>
+	</div>
+	<button ng-if="(nextPage > currentPage) && (users !== null)" class="btn btn-default btn-block" ng-click="showMore(currentPage, nextPage)">{{translate.showMore}}</button>
+</div>

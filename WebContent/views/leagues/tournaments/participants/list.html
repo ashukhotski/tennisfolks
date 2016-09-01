@@ -1,0 +1,21 @@
+<div class="page-header">
+	<h1>{{tournament.name}} <small>{{translate.participants}}</small> <a ng-if="authenticated && hasPermission()" href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/manage/tournaments/{{routeParams.tournamentId}}/participants" class="btn btn-primary">{{translate.manage}}</a></h1>
+	<a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/tournaments/{{routeParams.tournamentId}}">{{translate.goBack}}</a>
+</div>
+
+<div class="row">
+	<div class="col-sm-3 col-md-3" ng-repeat="participant in participants">
+		<div class="thumbnail{{participant.confirmed ? ' success' : ''}}">
+			<div class="image">
+				<a ng-href="./{{routeParams.lang}}/people/{{participant.user.id}}">
+					<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(participant.user.photo)}}" alt="{{participant.user.fullName}}">
+				</a>
+			</div>
+			<div class="caption">
+				<p><b><a ng-href="./{{routeParams.lang}}/people/{{participant.user.id}}">{{participant.user.fullName}}</a></b></p>
+				<p><a href="./{{routeParams.lang}}/people/{{participant.user.id}}" class="btn btn-default" role="button">{{translate.view}}</a> <span class="badge">TOP {{participant.top}}</span></p>
+			</div>
+		</div>
+	</div>
+	<button ng-if="(nextPageForParticipants > currentPageForParticipants) && (participants !== null)" class="btn btn-default btn-block" ng-click="showMoreParticipants(currentPageForParticipants, nextPageForParticipants)">{{translate.showMore}}</button>
+</div>

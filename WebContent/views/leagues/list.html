@@ -1,0 +1,32 @@
+<div class="page-header">
+	<h1>{{translate.leagues}} <small></small> <a ng-if="authenticated" href="./{{routeParams.lang}}/leagues/create" class="btn btn-primary">{{translate.create}}</a></h1>
+</div>
+
+<div class="row" ng-if="authenticated">
+	<ul class="nav nav-tabs">
+		<li role="presentation" ng-class="{active: $route.current.activetab == 'all'}"><a href="./{{routeParams.lang}}/leagues">{{translate.allLeagues}}</a></li>
+		<li role="presentation" ng-class="{active: $route.current.activetab == 'membership'}"><a href="./{{routeParams.lang}}/leagues/membership/{{authSession.id}}">{{translate.membership}}</a></li>
+		<li role="presentation" ng-class="{active: $route.current.activetab == 'management'}"><a href="./{{routeParams.lang}}/leagues/management/{{authSession.id}}">{{translate.management}}</a></li>
+	</ul>
+	<br>
+</div>
+<div ng-if="authenticated && ($route.current.activetab == 'all')">
+	<input type="checkbox" ng-model="nearby" ng-click="showNearbyOnly(nearby)"> {{translate.nearby}}
+	<hr>
+</div>
+<div class="row">
+	<div class="col-sm-3 col-md-3" ng-repeat="league in leagues">
+		<div class="thumbnail">
+			<div class="image">
+				<a ng-href="./{{routeParams.lang}}/leagues/{{league.id}}">
+					<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(league.logo)}}" alt="{{league.name}}">
+				</a>
+			</div>
+			<div class="caption">
+				<p><b><a ng-href="./{{routeParams.lang}}/leagues/{{league.id}}">{{league.name}}</a></b></p>
+				<p><a class="btn btn-default" href="./{{routeParams.lang}}/leagues/{{league.id}}">{{translate.view}}</a></p>
+			</div>
+		</div>
+	</div>
+	<button ng-if="(nextPageForLeagues > currentPageForLeagues) && (leagues !== null)" class="btn btn-default btn-block" ng-click="showMoreLeagues(currentPageForLeagues, nextPageForLeagues)">{{translate.showMore}}</button>
+</div>

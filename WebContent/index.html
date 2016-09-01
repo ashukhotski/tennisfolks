@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<meta charset="UTF-8">
+	<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="./css/tennisfolks.css" rel="stylesheet" type="text/css">
+	<script  src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./bootstrap/js/collapse.js"></script>
+	<script type="text/javascript" src="./bootstrap/js/bootstrap-filestyle.min.js"> </script>
+
+	<title>TENNISFOLKS</title>
+	<!-- <base href="http://localhost:8080/tennisfolks/"> -->
+	<base href="/">
+</head>
+<body ng-controller="mainController" ng-init="authenticate()" ng-cloak>
+	<div class="container-fluid">
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container-fluid">
+		    	<div class="navbar-header">
+		    		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				        <span class="sr-only">Toggle navigation</span>
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+				    </button>
+		      		<a class="navbar-brand" href="./{{routeParams.lang}}/">
+		        		<img height="50px" alt="TENNISFOLKS" src="images/tennisfolks.png">
+		      		</a>
+		    	</div>
+		    	
+		    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      	<ul class="nav navbar-nav">
+			      		<li><a href="./{{routeParams.lang}}/people">{{translate.people}}</a></li>
+			        	<li><a href="./{{routeParams.lang}}/leagues">{{translate.leagues}}</a></li>
+			        	<li><a href="./{{routeParams.lang}}/challenges">{{translate.matches}}</a></li>
+			        	<li><a href="./{{routeParams.lang}}/tournaments">{{translate.tournaments}}</a></li>
+			        	<li ng-if="!authenticated" class="dropdown">
+				        	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{translate.selectLanguage}} <span class="caret"></span></a>
+				        	<ul class="dropdown-menu" ng-controller="languagesController">
+          						<li ng-repeat="l in languages"><a href="./{{buildLocalizedUrl(l.code)}}">{{l.name}}</a></li>
+				        	</ul>
+				        </li>
+			    	</ul>
+			    	<form class="navbar-form navbar-right" role="search">
+			        	<div class="form-group">
+			          		<input type="text" placeholder="{{translate.search}}"
+			          			ng-model="search.user.name" 
+								ng-model-options="{ debounce: { default: 500, blur: 100 } }"
+								typeahead-on-select="onPersonSelect($item)" 
+								typeahead-min-length="2"  
+								uib-typeahead="user.fullName for user in searchForUsers($viewValue) | limitTo:8" 
+								typeahead-loading="loadingUsersResults" 
+								typeahead-no-results="noUsersResults" 
+								class="form-control">
+							<span ng-show="!loadingUsersResults" class="glyphicon glyphicon-search"></span>
+						    <span ng-show="loadingUsersResults" class="glyphicon glyphicon-refresh"></span>
+						    <div ng-show="noUsersResults">
+						    	<i class="glyphicon glyphicon-remove"></i> {{translate.noResults}}
+						    </div>
+			        	</div>
+			        	<button ng-if="false" type="button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+			     	</form>
+			    </div><!-- /.navbar-collapse -->
+			</div>
+		</nav>
+		
+		<div class="col-md-2">
+			<form role="form" ng-submit="signin(credentials)" ng-if="!authenticated">
+				<div class="form-group">
+			    	<label for="email">{{translate.emailAddress}}:</label>
+			    	<input type="email" class="form-control" id="email" ng-model="credentials.email">
+				</div>
+				<div class="form-group">
+			    	<label for="password">{{translate.password}}:</label>
+			    	<input type="password" class="form-control" id="password" ng-model="credentials.password">
+				</div>
+				<div class="checkbox" ng-if="false">
+			    	<label><input type="checkbox" ng-model="credentials.rememberme"> Remember me</label>
+				</div>
+				<button type="submit" class="btn btn-primary">{{translate.signIn}}</button>
+				<a href="./{{routeParams.lang}}/signup" class="btn btn-default" role="button">{{translate.signUp}}</a><br><br>
+				<a href="./{{routeParams.lang}}/password">{{translate.forgotThePassword}}</a>
+			</form>
+				
+			<ul class="nav nav-pills nav-stacked" ng-if="authenticated">
+				<li role="presentation"><p><a href="./{{routeParams.lang}}/people/{{authSession.id}}">{{translate.profile}}</a> <small><a href="./{{routeParams.lang}}/people/{{authSession.id}}/edit" class="lowercase">[{{translate.edit}}]</a></small></p></li>
+				<li role="presentation"><a href="./{{routeParams.lang}}/people/{{authSession.id}}/following">{{translate.connections}}</a></li>
+				<li role="presentation"><a href="./{{routeParams.lang}}/messages">{{translate.dialogues}}</a></li>
+				<li role="presentation"><a href="./{{routeParams.lang}}/challenges/player/{{authSession.id}}">{{translate.challenges}}</a></li>
+				
+				<li role="presentation"><a href="./{{routeParams.lang}}/open/player/{{authSession.id}}">{{translate.openChallenges}}</a></li>
+				<li role="presentation"><a href="./{{routeParams.lang}}/open/new">{{translate.challengeAnyone}}</a></li>
+				
+				<li role="presentation"><a href="./{{routeParams.lang}}/leagues/membership/{{authSession.id}}">{{translate.leagues}}</a></li>
+				<li role="presentation"><a href="./{{routeParams.lang}}/signout" ng-click="signout()">{{translate.signOut}}</a></li>
+			</ul>
+		</div>
+		<div class="col-md-9">
+			<div ng-view></div>
+		</div>			
+	</div>
+	<footer class="footer"><br>
+		<div class="container-fluid" >
+		    <p class="navbar-text">Tennisfolks © 2016</p>
+		    <ul id="language" class="nav navbar-nav navbar-left" ng-controller="languagesController">
+          		<li ng-repeat="l in languages"><a href="./{{buildLocalizedUrl(l.code)}}">{{l.name}}</a></li>
+      		</ul>
+		</div>
+	</footer>
+	
+	<script type="text/javascript" src="./angular.js/angular.min.js"></script>
+	<script type="text/javascript" src="./angular.js/angular-route.min.js"></script>
+	<script type="text/javascript" src="./angular.js/angular-resource.min.js"></script>
+	<script type="text/javascript" src="./angular.js/angular-cookies.min.js"></script>
+	<script type="text/javascript" src="./angular.js/angular-messages.min.js"></script>
+	<script type="text/javascript" src="./angular.js/ng-infinite-scroll.min.js"></script>
+	<script type="text/javascript" src="./angular.js/angular-animate.min.js"></script>
+	<script type="text/javascript" src="./angular.js/angular-touch.min.js"></script>
+	<script type="text/javascript" src="./angular.js/ui-bootstrap-tpls-1.3.3.min.js"></script>
+	<script type="text/javascript" src="./i18n/locale.js"></script> 
+	<script type="text/javascript" src="./js/app.js"></script>
+</body>
+</html>

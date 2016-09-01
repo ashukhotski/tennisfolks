@@ -1,0 +1,57 @@
+<div ng-if="authenticated && hasPermission()">
+	<div class="page-header">
+		<h1>{{translate.newTournament}}</h1>
+		<a ng-href="./{{routeParams.lang}}/leagues/{{routeParams.leagueId}}/manage/tournaments">{{translate.goBack}}</a>
+	</div>
+	
+	<form role="form" id="newTournamentForm" ng-submit="create(tournament)">
+		<div class="form-group">
+			<label for="name">{{translate.name}}:</label>
+			<input type="text" id="name" ng-model="tournament.name" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="numberOfPlayers">{{translate.numberOfPlayers}}:</label>
+			<input type="text" id="numberOfPlayers" ng-model="tournament.numberOfPlayers" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="startDate">{{translate.startDate}}</label>
+			<div id="startDate" class="controls form-inline">
+				<label for="startMonth">{{translate.month}}:</label>
+				<select id="startMonth" name="startMonth" ng-options="month for month in months" ng-model="tournament.startDateMonth" class="form-control" required></select>
+				<label for="startDay">{{translate.day}}:</label>
+				<select id="startDay" name="startDay" ng-options="day for day in days" ng-model="tournament.startDateDay" class="form-control" required></select>
+				<label for="startYear">{{translate.year}}:</label>
+				<select id="startYear" name="startYear" ng-options="year for year in years" ng-model="tournament.startDateYear" class="form-control" required></select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="endDate">{{translate.endDate}}</label>
+			<div id="endDate" class="controls form-inline">
+				<label for="endMonth">{{translate.month}}:</label>
+				<select id="endMonth" name="endMonth" ng-options="month for month in months" ng-model="tournament.endDateMonth" class="form-control" required></select>
+				<label for="endDay">{{translate.day}}:</label>
+				<select id="endDay" name="endDay" ng-options="day for day in days" ng-model="tournament.endDateDay" class="form-control" required></select>
+				<label for="endYear">{{translate.year}}:</label>
+				<select id="endYear" name="endYear" ng-options="year for year in years" ng-model="tournament.endDateYear" class="form-control" required></select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="description">{{translate.description}}:</label>
+			<textarea class="form-control" id="description" ng-model="tournament.description">{{tournament.description}}</textarea>
+		</div>
+		
+		<div class="form-group">
+			<label for="level">{{translate.levelOfOpponents}}:</label>
+			<div class="form-inline">
+		  		<select class="form-control" id="level" ng-model="tournament.targetLevel" ng-options="level.value as level.label for level in levelOptions"></select>
+			
+		  		<select class="form-control" id="levelShift" ng-model="tournament.levelShift" ng-options="shift.value as shift.label for shift in levelShiftOptions"></select>
+	  		</div>
+		</div>
+		<button class="btn btn-primary" type="submit">{{translate.create}}</button>
+	</form>
+</div>

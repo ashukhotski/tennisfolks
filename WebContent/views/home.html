@@ -1,0 +1,48 @@
+<div class="page-header">
+	<h1>{{translate.about}} TENNISFOLKS<small></small></h1>
+</div>
+<div class="row">
+	
+	<div class="col-md-9">
+		<p>{{translate.tennisfolksDescription}}</p>
+	</div>
+	<div class="col-md-3">
+		<img class="img img-responsive full-width" src="./images/tennisball.jpg">
+	</div>
+</div>
+<div class="page-header">
+	<h2>{{translate.featuredPlayers}} <small></small></h2>
+</div>
+<div class="row">
+	<div class="col-sm-3 col-md-3 col-lg-3" ng-repeat="user in users">
+		<div class="thumbnail">
+			<div class="image">
+				<a ng-href="./{{routeParams.lang}}/people/{{user.id}}">
+					<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(user.photo)}}" alt="{{user.fullName}}">
+				</a>
+			</div>
+			<div class="caption">
+				<p><b><a ng-href="./{{routeParams.lang}}/people/{{user.id}}">{{user.fullName}}</a></b></p>
+				<p><a ng-if="authenticated && !isSamePerson(authSession.id, user.id)" href="./{{routeParams.lang}}/challenges/new/{{user.id}}" class="btn btn-primary" role="button">{{translate.toChallenge}}</a> <a href="./{{routeParams.lang}}/people/{{user.id}}" class="btn btn-default" role="button">{{translate.view}}</a></p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="page-header">
+	<h2>{{translate.openChallenges}} <small></small></h2>
+</div>
+<div class="row">
+	<div class="col-sm-3 col-md-3 col-lg-3" ng-repeat="challenge in challenges">
+		<div class="thumbnail">
+			<div class="image">
+				<a ng-href="./{{routeParams.lang}}/open/{{challenge.id}}">
+					<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(challenge.firstPlayer.photo)}}" alt="{{challenge.firstPlayer.fullName}}">
+				</a>
+			</div>
+			<div class="caption">
+				<p><b><a ng-href="./{{routeParams.lang}}/open/{{challenge.id}}">{{challenge.startDateMonth}}/{{challenge.startDateDay}}/{{challenge.startDateYear}} ({{challenge.firstPlayer.fullName}})</a></b></p>
+				<p><a ng-if="authenticated && (authSession.id != challenge.firstPlayerId) && !challenge.accepted" ng-click="accept(challenge.id)" class="btn btn-primary" role="button">{{translate.accept}}</a> <a href="./{{routeParams.lang}}/open/{{challenge.id}}" class="btn btn-default" role="button">{{translate.view}}</a></p>
+			</div>
+		</div>
+	</div>
+</div>

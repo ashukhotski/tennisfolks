@@ -1,0 +1,24 @@
+<div class="page-header">
+	<h1>{{translate.matches}} <small>{{translate.openChallenges}}</small></h1>
+</div>
+<div class="row">
+	<ul class="nav nav-tabs">
+		<li role="presentation"><a href="./{{routeParams.lang}}/challenges">{{translate.challenges}}</a></li>
+		<li role="presentation" class="active"><a href="./{{routeParams.lang}}/open">{{translate.openChallenges}}</a></li>
+	</ul>
+	<br>
+</div>
+<div class="row">
+	<div class="col-sm-3 col-md-3 col-lg-3" ng-repeat="challenge in challenges">
+		<div class="thumbnail">
+			<div class="image">
+				<img class="img img-responsive full-width" width="100%" ng-src="{{renderImage(challenge.firstPlayer.photo)}}" alt="{{challenge.firstPlayer.fullName}}">
+			</div>
+			<div class="caption">
+				<p><b><a ng-href="./{{routeParams.lang}}/open/{{challenge.id}}">{{challenge.startDateMonth}}/{{challenge.startDateDay}}/{{challenge.startDateYear}} ({{challenge.firstPlayer.fullName}})</a></b></p>
+				<p><a ng-if="authenticated && (authSession.id != challenge.firstPlayerId) && !challenge.accepted" ng-click="accept(challenge.id)" class="btn btn-primary" role="button">{{translate.accept}}</a> <a href="./{{routeParams.lang}}/open/{{challenge.id}}" class="btn btn-default" role="button">{{translate.view}}</a></p>
+			</div>
+		</div>
+	</div>
+	<button ng-if="(nextPageForChallenges > currentPageForChallenges) && (challenges !== null)" class="btn btn-default btn-block" ng-click="showMoreChallenges(currentPageForChallenges, nextPageForChallenges)">{{translate.showMore}}</button>
+</div>
